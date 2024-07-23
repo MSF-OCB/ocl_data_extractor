@@ -6,7 +6,12 @@ import json
 import os
 import pandas as pd
 
+
+
 def process_json(json_data):
+    """
+    function to select the columns for concept and mapping sheets
+    """
     id_value = json_data.get('id', '')  # Extract id from the main level
     concept_data_list = []
     mapping_data_list = []
@@ -23,21 +28,24 @@ def process_json(json_data):
     #return data_list
 
     for mapping in json_data.get('mappings', []):
-            row = {
-                'ID': id_value,
-                'MappingID': mapping.get('id', ''),
-                'MappingExternalID': mapping.get('external_id', ''),
-                'MappingSource': mapping.get('source', ''),
-                'FromConceptCode': mapping.get('from_concept_code', ''),
-                'FromConceptNameResolved': mapping.get('from_concept_name_resolved', ''),
-                'ToConceptCode': mapping.get('to_concept_code', ''),
-                'ToConceptNameResolved': mapping.get('to_concept_name_resolved', ''),
-                'Retired': mapping.get('retired')
+        row = {
+            'ID': id_value,
+            'MappingID': mapping.get('id', ''),
+            'MappingExternalID': mapping.get('external_id', ''),
+            'MappingSource': mapping.get('source', ''),
+            'FromConceptCode': mapping.get('from_concept_code', ''),
+            'FromConceptNameResolved': mapping.get('from_concept_name_resolved', ''),
+            'ToConceptCode': mapping.get('to_concept_code', ''),
+            'ToConceptNameResolved': mapping.get('to_concept_name_resolved', ''),
+            'Retired': mapping.get('retired')
             }
-            mapping_data_list.append(row)        
+        mapping_data_list.append(row)
     return concept_data_list, mapping_data_list
 
 def main():
+    """
+    function to select the columns for concept and mapping sheets
+    """
     input_files = ['export.json']  # List of input JSON files
     # Get the current date in the desired format
     current_date = datetime.now().strftime("%d_%b_%Y")
@@ -56,13 +64,15 @@ def main():
             print(f"File '{file}' not found. Skipping.")
 
     # Create DataFrame for concepts data
-    df_concepts = pd.DataFrame(concept_data, columns=['ID', 'ExternalID', 'Collection', 'Source', 'ConceptName',
-                                                      'Retired'])
+    df_concepts = pd.DataFrame(concept_data, columns=[
+    'ID', 'ExternalID', 'Collection',
+    'Source', 'ConceptName', 'Retired'])
 
     # Create DataFrame for mappings data
-    df_mappings  = pd.DataFrame(mapping_data, columns=['ID', 'MappingID','MappingExternalID', 'MappingSource',
-                                                       'FromConceptCode', 'FromConceptNameResolved', 'ToConceptCode',
-                                                       'ToConceptNameResolved', 'Retired'])
+    df_mappings  = pd.DataFrame(mapping_data, columns=[
+    'ID', 'MappingID','MappingExternalID', 'MappingSource',
+    'FromConceptCode', 'FromConceptNameResolved', 'ToConceptCode',
+    'ToConceptNameResolved', 'Retired'])
 
     # Write DataFrames to Excel
     with pd.ExcelWriter(output_file, engine='xlsxwriter') as writer:
